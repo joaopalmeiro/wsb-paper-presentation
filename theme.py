@@ -3,6 +3,7 @@ from typing import Dict
 
 
 COLORS = {"white": "#FFFFFF", "light_gray": "#EBEBEB", "black": "#44475A"}
+LOCALE = {"decimal": ",", "thousands": ".", "grouping": [3], "currency": ["", "€"]}
 
 
 def lcontrast_theme_tooltip():
@@ -105,6 +106,7 @@ def set_alt_aesthetic(
             "i18n": {"PNG_ACTION": "Save as PNG", "SVG_ACTION": "Save as SVG"},
             "tooltip": {"theme": tooltip_theme},
             "renderer": "svg",
+            "formatLocale": LOCALE,
         },
     )
 

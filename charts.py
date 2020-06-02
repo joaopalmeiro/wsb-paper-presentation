@@ -46,7 +46,7 @@ def ssb_chart(
                         tickCount=10,
                         ticks=False,
                         labels=False,
-                        title=f"[0, {scale})",
+                        title=f"[0, {'{:,}'.format(scale).replace(',', '.')})",
                         titleAngle=0,
                         titleAlign="right",
                         titleAnchor="middle",
@@ -56,7 +56,7 @@ def ssb_chart(
                 ),
                 tooltip=[
                     alt.Tooltip(f"{xvar}:N", title=xvar.capitalize()),
-                    alt.Tooltip(f"{yvar}:Q", title=yvar.capitalize()),
+                    alt.Tooltip(f"{yvar}:Q", format=",", title=yvar.capitalize()),
                 ],
             )
             .transform_filter((alt.datum.value < scale))
@@ -222,14 +222,14 @@ def wsb_chart(
             color=alt.Color(
                 f"{evar}:O",
                 title="Magnitude Multiplier",
-                legend=alt.Legend(labelExpr="'× ' + datum.value"),
+                legend=alt.Legend(labelExpr="'× ' + format(datum.value, ',')"),
                 scale=alt.Scale(scheme=color_scheme),
             ),
             tooltip=[
                 alt.Tooltip(f"{xcat}:N", title=xcat.capitalize()),
                 alt.Tooltip(f"{vvar}:N", title="Value"),
                 alt.Tooltip(f"{yvar}:Q", title=yvar.capitalize()),
-                alt.Tooltip(f"{evar}:O", title="Magnitude Multiplier"),
+                alt.Tooltip(f"{evar}:O", format=",", title="Magnitude Multiplier"),
             ],
             opacity=alt.condition(selection, alt.value(1), alt.value(0.2)),
         )
@@ -249,3 +249,44 @@ def wsb_chart(
     )
 
     return alt.layer(bar, text, title=alt.TitleParams(title, anchor="start"))
+
+
+def bar_chart(
+    data: pd.DataFrame,
+    xvar: str = "category",
+    yvar: str = "value",
+    yscale: str = "linear",
+    w: int = 400,
+    h: int = 400,
+    bar_color: str = "#FA7051",
+    title: str = "Bar Chart",
+) -> alt.Chart:
+    base = alt.Chart(
+        data,
+        width=w,
+        height=h,
+        title=alt.TitleParams(f"{yscale.capitalize()} {title}", anchor="start"),
+    )
+
+    bar = base.mark_bar(color=bar_color).encode(
+        x=alt.X(f"{xvar}:N", axis=alt.Axis(title=xvar.capitalize())),
+        y=alt.Y(
+            f"{yvar}:Q",
+            scale=alt.Scale(type=yscale)
+            if yscale == "log"
+            else alt.Scale(type=yscale, domain=[0, 10_000]),
+            axis=alt.Axis(
+                title=yvar.capitalize(),
+                titleAngle=0,
+                titleAlign="left",
+                titleY=-5,
+                titleX=0,
+            ),
+        ),
+        tooltip=[
+            alt.Tooltip(f"{xvar}:N", title=xvar.capitalize()),
+            alt.Tooltip(f"{yvar}:Q", format=",", title=yvar.capitalize()),
+        ],
+    )
+
+    return bar
