@@ -55,8 +55,8 @@ def ssb_chart(
                     scale=alt.Scale(domain=[0, scale]),
                 ),
                 tooltip=[
-                    alt.Tooltip(xvar, title=xvar.capitalize()),
-                    alt.Tooltip(yvar, title=yvar.capitalize()),
+                    alt.Tooltip(f"{xvar}:N", title=xvar.capitalize()),
+                    alt.Tooltip(f"{yvar}:Q", title=yvar.capitalize()),
                 ],
             )
             .transform_filter((alt.datum.value < scale))
@@ -80,17 +80,17 @@ def ssb_chart(
 
 
 def omm_chart(
-    data,
-    xvar="category",
-    e_yvar="exponent",
-    m_yvar="mantissa",
-    v_var="original",
-    w=400,
-    h=400,
-    m_color="#FA7051",
-    e_color="#707070",
-    title="Order of Magnitude Markers",
-):
+    data: pd.DataFrame,
+    xvar: str = "category",
+    e_yvar: str = "exponent",
+    m_yvar: str = "mantissa",
+    v_var: str = "original",
+    w: int = 400,
+    h: int = 400,
+    m_color: str = "#FA7051",
+    e_color: str = "#707070",
+    title: str = "Order of Magnitude Markers",
+) -> alt.LayerChart:
     _n_bars = len(data[xvar].unique())
 
     # Default `bandPaddingInner` = 0.1
@@ -152,3 +152,100 @@ def omm_chart(
         .properties(width=w, height=h)
         .add_selection(selection)
     )
+
+
+def wsb_chart(
+    data: pd.DataFrame,
+    xvar: str = "start",
+    x2var: str = "end",
+    xvar_middle: str = "middle",
+    yvar: str = "mantissa",
+    vvar: str = "original",
+    evar: str = "multiplier",
+    xcat: str = "category",
+    w: int = 400,
+    h: int = 400,
+    color_scheme: str = "reds",
+    title: str = "Width-Scale Bar Chart",
+) -> alt.LayerChart:
+    _n_bars = len(data[xcat].unique())
+    _padding_width = (w / _n_bars) * 0.1
+
+    data_with_padding = data.copy()
+    data_with_padding["start"] = (
+        data_with_padding["start"]
+        + _padding_width / 4
+        + _padding_width / 2 * data_with_padding.index
+    )
+    data_with_padding["end"] = (
+        data_with_padding["end"]
+        + _padding_width / 4
+        + _padding_width / 2 * data_with_padding.index
+    )
+    data_with_padding["middle"] = (
+        (data_with_padding["end"] - data_with_padding["start"]) / 2
+    ) + data_with_padding["start"]
+
+    selection = alt.selection_single(fields=["multiplier"], bind="legend")
+
+    # base = alt.Chart(data, width=w, height=h)
+    base = alt.Chart(data_with_padding, width=w, height=h)
+
+    bar = (
+        # base.mark_rect(xOffset=1.0, x2Offset=0.5)
+        base.mark_rect()
+        .encode(
+            x=alt.X(
+                f"{xvar}:Q",
+                axis=alt.Axis(
+                    titleY=(-0.5 + 22),
+                    labels=False,
+                    title=xcat.capitalize(),
+                    grid=False,
+                    # values=data[xvar_middle].to_list(),
+                    values=data_with_padding[xvar_middle].to_list(),
+                ),
+            ),
+            x2=alt.X2(f"{x2var}:Q"),
+            y=alt.Y(
+                f"{yvar}:Q",
+                axis=alt.Axis(
+                    title=yvar.capitalize(),
+                    titleAngle=0,
+                    titleAlign="left",
+                    titleY=-5,
+                    titleX=0,
+                    labelExpr="datum.value + ' ×'",
+                ),
+                scale=alt.Scale(domain=[0, 10]),
+            ),
+            color=alt.Color(
+                f"{evar}:O",
+                title="Magnitude Multiplier",
+                legend=alt.Legend(labelExpr="'× ' + datum.value"),
+                scale=alt.Scale(scheme=color_scheme),
+            ),
+            tooltip=[
+                alt.Tooltip(f"{xcat}:N", title=xcat.capitalize()),
+                alt.Tooltip(f"{vvar}:N", title="Value"),
+                alt.Tooltip(f"{yvar}:Q", title=yvar.capitalize()),
+                alt.Tooltip(f"{evar}:O", title="Magnitude Multiplier"),
+            ],
+            opacity=alt.condition(selection, alt.value(1), alt.value(0.2)),
+        )
+        .add_selection(selection)
+    )
+
+    # Altair/Vega-Lite:
+    # Default `labelFontSize` = 10
+    # Default `tickSize` = 5
+    # Default `labelPadding` = 2
+    # Default `translate` = 0.5
+
+    text = base.mark_text(align="center", baseline="middle", fontSize=10).encode(
+        x=alt.X(f"{xvar_middle}:Q"),
+        y=alt.value(h + (10 / 2) + 5 + 2 + 0.5),
+        text=alt.Text(f"{xcat}:N"),
+    )
+
+    return alt.layer(bar, text, title=alt.TitleParams(title, anchor="start"))
