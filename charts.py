@@ -11,7 +11,7 @@ def ssb_chart(
     fvar: str = "scale",
     w: int = 400,
     total_h: int = 400,
-    bar_color: str = "#FA7051",
+    bar_color: str = "#F3852A",
     title: str = "Scale-Stack Bar Chart",
 ) -> alt.VConcatChart:
     _scales = data[fvar].sort_values(ascending=False).unique().tolist()
@@ -89,7 +89,7 @@ def omm_chart(
     v_var: str = "original",
     w: int = 400,
     h: int = 400,
-    m_color: str = "#FA7051",
+    m_color: str = "#F3852A",
     e_color: str = "#707070",
     title: str = "Order of Magnitude Markers",
 ) -> alt.LayerChart:
@@ -167,7 +167,7 @@ def wsb_chart(
     xcat: str = "category",
     w: int = 400,
     h: int = 400,
-    color_scheme: str = "reds",
+    color_scheme: str = "orangered",
     title: str = "Width-Scale Bar Chart",
 ) -> alt.LayerChart:
     _n_bars = len(data[xcat].unique())
@@ -260,7 +260,7 @@ def bar_chart(
     yscale: str = "linear",
     w: int = 400,
     h: int = 400,
-    bar_color: str = "#FA7051",
+    bar_color: str = "#F3852A",
     title: str = "Bar Chart",
     partial_title: bool = True,
     xvar_complement: Optional[str] = None,
@@ -303,3 +303,57 @@ def bar_chart(
     )
 
     return bar
+
+
+def show_population():
+    data = pd.read_csv("pop_eurostat.csv", thousands=",")
+
+    data = data.drop(["TIME", "INDIC_DE", "Flag and Footnotes"], axis=1)
+    data["GEO_LABEL"] = data["GEO_LABEL"].str.replace(r" \(.*\)", "")
+    data = data.rename(
+        columns={"GEO": "code", "Value": "value", "GEO_LABEL": "country"}
+    )
+
+    return bar_chart(
+        data,
+        xvar="code",
+        xvar_complement="country",
+        yvar="value",
+        yscale="linear",
+        w=800,
+        title=[
+            "Population on January 1, 2019 in European countries",
+            "Source: Eurostat",
+        ],
+        partial_title=False,
+    )
+
+
+def show_log_error():
+    data = pd.DataFrame(
+        {
+            "v": [10, 1, 15],
+            "category": ["encoded", "low", "high"],
+            "label": [
+                "encoded value",
+                "log(1/10) = -1 → too low, exponent error",
+                "log(15/10) = 0.18 → too high, mantissa error",
+            ],
+        }
+    )
+
+    data
+
+    base = alt.Chart(data, width=400, height=400)
+
+    bar = base.mark_bar().encode(
+        x=alt.X(
+            "category:N",
+            axis=alt.Axis(ticks=False, labels=False, title=None),
+            scale=alt.Scale(domain=["encoded", "low", "high"]),
+        ),
+        y=alt.Y("v:Q", axis=alt.Axis(ticks=False, domain=False)),
+        color=alt.Color("label:N", title=None, legend=alt.Legend(labelLimit=200)),
+    )
+
+    return bar.configure_view(strokeWidth=0)

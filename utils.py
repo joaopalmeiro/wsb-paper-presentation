@@ -2,7 +2,6 @@ from math import ceil, log10
 import string
 import pandas as pd
 from typing import List
-from charts import bar_chart
 
 
 SUPERSCRIPTS = {
@@ -64,27 +63,3 @@ def load_data(
     )
 
     return data
-
-
-def show_population():
-    data = pd.read_csv("pop_eurostat.csv", thousands=",")
-
-    data = data.drop(["TIME", "INDIC_DE", "Flag and Footnotes"], axis=1)
-    data["GEO_LABEL"] = data["GEO_LABEL"].str.replace(r" \(.*\)", "")
-    data = data.rename(
-        columns={"GEO": "code", "Value": "value", "GEO_LABEL": "country"}
-    )
-
-    return bar_chart(
-        data,
-        xvar="code",
-        xvar_complement="country",
-        yvar="value",
-        yscale="linear",
-        w=800,
-        title=[
-            "Population on January 1, 2019 in European countries",
-            "Source: Eurostat",
-        ],
-        partial_title=False,
-    )

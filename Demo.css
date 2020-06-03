@@ -82,3 +82,8 @@ div.input_area {
 .slide-number a {
   font-family: var(--font-base-family);
 }
+
+figcaption {
+  font-size: 12px;
+  text-align: center;
+}
