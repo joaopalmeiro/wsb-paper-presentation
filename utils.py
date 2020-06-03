@@ -52,7 +52,7 @@ def load_data(
     data["middle"] = ((data["end"] - data["start"]) / 2) + data["start"]
 
     data["original"] = (
-        data["value"].map("{:,}".format).str.replace(",", ".")
+        data["value"].map("{:,}".format)
         + " = "
         + data["mantissa"].map("{0:g}".format)
         + (

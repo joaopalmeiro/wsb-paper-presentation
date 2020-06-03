@@ -1,5 +1,6 @@
 import altair as alt
 import pandas as pd
+from utils import log10_ceiling
 
 
 def ssb_chart(
@@ -46,7 +47,7 @@ def ssb_chart(
                         tickCount=10,
                         ticks=False,
                         labels=False,
-                        title=f"[0, {'{:,}'.format(scale).replace(',', '.')})",
+                        title=f"[0, {'{:,}'.format(scale)})",
                         titleAngle=0,
                         titleAlign="right",
                         titleAnchor="middle",
@@ -274,7 +275,7 @@ def bar_chart(
             f"{yvar}:Q",
             scale=alt.Scale(type=yscale)
             if yscale == "log"
-            else alt.Scale(type=yscale, domain=[0, 10_000]),
+            else alt.Scale(type=yscale, domain=[0, log10_ceiling(data[yvar].max())]),
             axis=alt.Axis(
                 title=yvar.capitalize(),
                 titleAngle=0,

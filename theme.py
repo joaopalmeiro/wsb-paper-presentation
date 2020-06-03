@@ -3,7 +3,7 @@ from typing import Dict
 
 
 COLORS = {"white": "#FFFFFF", "light_gray": "#EBEBEB", "black": "#44475A"}
-LOCALE = {"decimal": ",", "thousands": ".", "grouping": [3], "currency": ["", "€"]}
+LOCALE = {"decimal": ".", "thousands": ",", "grouping": [3], "currency": ["", "€"]}
 
 
 def lcontrast_theme_tooltip():
