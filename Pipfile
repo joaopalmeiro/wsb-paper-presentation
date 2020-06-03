@@ -9,6 +9,7 @@ verify_ssl = true
 pandas = "*"
 altair = "*"
 jupyter = "*"
+rise = "*"
 
 [requires]
 python_version = "3.6"

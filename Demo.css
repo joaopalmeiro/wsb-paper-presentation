@@ -1,0 +1,84 @@
+:root {
+  --main-black-color: #44475a;
+  --main-white-color: #ffffff;
+  --main-lgray-color: #ebebeb;
+  --font-base-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  --font-monospace-family: SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+.my-main-tool-bar {
+  display: none;
+}
+
+.prompt {
+  display: none;
+}
+
+.dataframe {
+  font-family: var(--font-monospace-family);
+}
+
+.rendered_html table {
+  color: var(--main-black-color);
+}
+
+.reveal table th,
+.reveal table td {
+  padding: 0.5em 0.5em;
+}
+
+.reveal {
+  color: var(--main-black-color);
+  font-family: var(--font-base-family);
+}
+
+div.text_cell_render {
+  color: var(--main-black-color);
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  color: var(--main-black-color);
+  font-family: var(--font-base-family);
+}
+
+.reveal a:after {
+  content: " 🔗";
+  font-size: 0.5em;
+  vertical-align: middle;
+}
+
+.reveal a:visited {
+  text-decoration: none;
+}
+
+.rise-enabled .reveal a {
+  color: var(--main-black-color);
+  text-decoration: none;
+}
+
+div.input_area {
+  border-bottom: 2px solid var(--main-lgray-color);
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  background: var(--main-white-color);
+}
+
+.slide-number a::after {
+  content: "";
+}
+
+.slide-number a[href*="#/slide-0-0"] {
+  display: none;
+}
+
+.slide-number a {
+  font-family: var(--font-base-family);
+}

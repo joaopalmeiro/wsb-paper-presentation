@@ -8,6 +8,11 @@ Material for the presentation on the Width-Scale Bar Charts (Höhn et al., 2020)
 - `pipenv shell`
 - `pipenv run jupyter notebook`
 
+## Commands
+
+- Restart Jupyter Notebook: `Cmd+R`
+- Enter/Exit RISE slideshow: `Option+R`
+
 ## References
 
 - Borgo, R., Dearden, J. & Jones, M. W. (2014). Order of Magnitude Markers: An Empirical Study on Large Magnitude Number Detection. _IEEE Transactions on Visualization and Computer Graphics_, 20(12), 2261–2270. ht<span>tps://doi.org/10.1109/TVCG.2014.2346428</span> [:link:](http://cs.swan.ac.uk/~csmark/publications/2014_Order_of_Magnitude_Markers.html)
