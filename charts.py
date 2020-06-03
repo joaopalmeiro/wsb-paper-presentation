@@ -1,6 +1,7 @@
 import altair as alt
 import pandas as pd
 from utils import log10_ceiling
+from typing import Optional
 
 
 def ssb_chart(
@@ -261,13 +262,27 @@ def bar_chart(
     h: int = 400,
     bar_color: str = "#FA7051",
     title: str = "Bar Chart",
+    partial_title: bool = True,
+    xvar_complement: Optional[str] = None,
 ) -> alt.Chart:
     base = alt.Chart(
         data,
         width=w,
         height=h,
-        title=alt.TitleParams(f"{yscale.capitalize()} {title}", anchor="start"),
+        title=alt.TitleParams(
+            f"{yscale.capitalize()} {title}" if partial_title else title, anchor="start"
+        ),
     )
+
+    tooltip_list = [
+        alt.Tooltip(f"{xvar}:N", title=xvar.capitalize()),
+        alt.Tooltip(f"{yvar}:Q", format=",", title=yvar.capitalize()),
+    ]
+
+    if xvar_complement:
+        tooltip_list.append(
+            alt.Tooltip(f"{xvar_complement}:N", title=xvar_complement.capitalize())
+        )
 
     bar = base.mark_bar(color=bar_color).encode(
         x=alt.X(f"{xvar}:N", axis=alt.Axis(title=xvar.capitalize())),
@@ -284,10 +299,7 @@ def bar_chart(
                 titleX=0,
             ),
         ),
-        tooltip=[
-            alt.Tooltip(f"{xvar}:N", title=xvar.capitalize()),
-            alt.Tooltip(f"{yvar}:Q", format=",", title=yvar.capitalize()),
-        ],
+        tooltip=tooltip_list,
     )
 
     return bar
