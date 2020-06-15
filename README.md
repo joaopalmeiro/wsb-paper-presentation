@@ -4,14 +4,16 @@ Material for the presentation on the Width-Scale Bar Charts (Höhn et al., 2020)
 
 ## Quickstart
 
+If necessary, install [Pipenv](https://github.com/pypa/pipenv), please.
+
 - `pipenv install`
 - `pipenv shell`
 - `pipenv run jupyter notebook`
 
 ## Commands
 
-- Restart Jupyter Notebook: `Cmd+R`
-- Enter/Exit RISE slideshow: `Option+R`
+- Restart Jupyter Notebook: `Cmd+R` or `Ctrl+R`
+- Enter/Exit RISE slideshow: `Option+R` or `Alt+R`
 
 ## References
 
